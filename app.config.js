@@ -2,7 +2,7 @@ import "dotenv/config";
 
 export default {
   expo: {
-    name: "internLink",
+    name: "InternLink",
     slug: "internship-app",
     version: "1.0.0",
     orientation: "portrait",
@@ -10,8 +10,12 @@ export default {
     scheme: "internshipapp",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
-    ios: { supportsTablet: true },
+    ios: {
+      supportsTablet: true,
+      bundleIdentifier: "com.internlink.app",
+    },
     android: {
+      package: "com.internlink.app",
       adaptiveIcon: {
         backgroundColor: "#E6F4FE",
         foregroundImage: "./assets/images/android-icon-foreground.png",
@@ -43,7 +47,10 @@ export default {
       reactCompiler: true,
     },
     extra: {
-      apiUrl: process.env.EXPO_PUBLIC_API_URL,
+      apiUrl: process.env.EXPO_PUBLIC_API_URL || "https://internlink-production-f954.up.railway.app",
+      eas: {
+        projectId: "c07a243b-a13a-4d5c-9e6f-2a9543a73beb"
+      }
     },
   },
 };
