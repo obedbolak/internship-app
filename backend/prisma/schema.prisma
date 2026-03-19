@@ -1,0 +1,110 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = []
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      Role     @default(STUDENT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student   Student?
+  company   Company?
+}
+
+enum Role {
+  STUDENT
+  COMPANY
+}
+
+model Student {
+  id           String        @id @default(cuid())
+  userId       String        @unique
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName    String
+  lastName     String
+  fieldOfStudy String
+  university   String
+  bio          String?
+  profileImage String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  applications Application[]
+}
+
+model Company {
+  id           String        @id @default(cuid())
+  userId       String        @unique
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  industry     String
+  description  String
+  location     String
+  website      String?
+  logo         String?
+  isVerified   Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  internships  Internship[]
+}
+
+model Internship {
+  id           String        @id @default(cuid())
+  companyId    String
+  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  title        String
+  description  String
+  fieldOfStudy String
+  location     String
+  isPaid       Boolean       @default(false)
+  salary       Float?
+  duration     String
+  deadline     DateTime
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  applications Application[]
+}
+
+model Application {
+  id           String            @id @default(cuid())
+  studentId    String
+  student      Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  internshipId String
+  internship   Internship        @relation(fields: [internshipId], references: [id], onDelete: Cascade)
+  status       ApplicationStatus @default(PENDING)
+  coverLetter  String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@unique([studentId, internshipId])
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  ACCEPTED
+  REJECTED
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
