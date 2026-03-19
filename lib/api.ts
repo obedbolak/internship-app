@@ -3,7 +3,7 @@ import Constants from "expo-constants";
 
 // On device, localhost won't work — use your machine's LAN IP e.g. http://192.168.x.x:8081
 // On web, relative paths work fine
-const BASE = "http://192.168.1.190:3000";
+const BASE = "https://internlink-production-f954.up.railway.app";
 
 console.log("[API] Base URL:", BASE);
 
